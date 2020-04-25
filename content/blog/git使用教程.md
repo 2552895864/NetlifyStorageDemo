@@ -13,11 +13,10 @@ description: 结合实际工作的需求，介绍 Git 的基本使用
     - [配置](#%e9%85%8d%e7%bd%ae)
   - [日常操作](#%e6%97%a5%e5%b8%b8%e6%93%8d%e4%bd%9c)
     - [创建仓库](#%e5%88%9b%e5%bb%ba%e4%bb%93%e5%ba%93)
-    - [从远程库拉取最新代码](#%e4%bb%8e%e8%bf%9c%e7%a8%8b%e5%ba%93%e6%8b%89%e5%8f%96%e6%9c%80%e6%96%b0%e4%bb%a3%e7%a0%81)
+    - [远程库](#%e8%bf%9c%e7%a8%8b%e5%ba%93)
     - [提交代码](#%e6%8f%90%e4%ba%a4%e4%bb%a3%e7%a0%81)
     - [撤回、回退](#%e6%92%a4%e5%9b%9e%e5%9b%9e%e9%80%80)
     - [分支操作](#%e5%88%86%e6%94%af%e6%93%8d%e4%bd%9c)
-    - [切换分支](#%e5%88%87%e6%8d%a2%e5%88%86%e6%94%af)
   - [VSCode工具](#vscode%e5%b7%a5%e5%85%b7)
     - [自带的源代码管理](#%e8%87%aa%e5%b8%a6%e7%9a%84%e6%ba%90%e4%bb%a3%e7%a0%81%e7%ae%a1%e7%90%86)
     - [GitLens](#gitlens)
@@ -44,6 +43,7 @@ description: 结合实际工作的需求，介绍 Git 的基本使用
 设置全局配置
 $ git config --global user.name "Your Name"
 $ git config --global user.email "email@example.com"
+
 查看全局配置
 $ git config --global --list
 ```
@@ -54,6 +54,7 @@ $ git config --global --list
 设置项目配置
 $ git config user.name "Your Name"
 $ git config user.email "email@example.com"
+
 查看当前配置及配置文件路径
 $ git config --list --show-origin
 ```
@@ -109,6 +110,7 @@ $ git init
 $ git add .
 $ git commit -m "initial commit"
 $ git remote add origin https://github.com/[your-username]/[your-repo-name].git
+
 将两边master分支联系起来
 $ git push -u origin master
 ```
@@ -117,42 +119,70 @@ $ git push -u origin master
 
 ```
 首先，在 Github 上创建一个仓库，然后
+
 HTTPS 方式
 $ git clone https://github.com/[your-username]/[your-repo-name].git
+
 SSH Key 方式
 $ git clone git@github.com:[your-username]/[your-repo-name].git
 ```
 
-### 从远程库拉取最新代码
+### 远程库
 
-#### 配置远程库
-
-```
-添加
-$ git remote add [originname] [repo]
-查看
-$ git remote -v
-```
-
-#### 拉取代码
+#### 从远程库拉取最新代码
 
 ```
 拉取远程库指定分支到当前分支并合并
 $ git pull origin [branchname]
+
 拉取指定分支到当前分支
 $ git fetch origin [branchname]
 ```
+
+#### 代码迁移
+
+##### 使用的命令
+```
+添加
+$ git remote add [originname] [repo-url]
+
+查看
+$ git remote -v
+
+删除
+$ git remote remove [originname]
+```
+
+##### 示例——从 A 仓库迁移代码到 B 仓库
+
+```
+添加目标仓库 B 
+$ git remote add originb [repo-url]
+
+在当前仓库 A 创建分支
+$ git checkout -b branch2b
+
+把分支推送到仓库 B 
+$ git push originb branch2b
+其他分支以此类推，只要分支名与仓库 B 已有分支不重名即可
+```
+说明：这里只介绍了 A 仓库推送到 B 仓库的做法，至于 B 仓库能不能拉取 A 仓库分支，还有待调研
 
 ### 提交代码
 
 #### 提交对当前分支的修改（不需要合并）
 
 ```
+工作区 -> 暂存区
 $ git add .
+
+暂存区 -> 本地仓库
 $ git commit -am "xxx"
-在 push 前要先 pull
+
+本地仓库 -> 远程仓库 
 $ git pull origin [curent-branchname]
 $ git push origin [curent-branchname]
+在 push 前要先 pull
 ```
 
 #### 提交修改到dev/master分支（需要合并）
@@ -162,18 +192,19 @@ $ git push origin [curent-branchname]
 $ git add .
 $ git commit -am "xxx"
 $ git pull origin [target-branchname]
+
 如果出现
 $ Auto-merging readme.txt
 $ CONFLICT (content): Merge conflict in readme.txt
 $ Automatic merge failed; fix conflicts and then commit the result.
-需要到指定文件出手动解决冲突，上例为：readme.txt
-解决冲突后再次提交
+
+需要到指定文件出手动解决冲突，上例为：readme.txt 然后再次提交
 $ git add readme.txt
 $ git commit -m "conflict fixed"
 $ git push origin [curent-branchname]
 ```
 
-#### add 和 commit 区别
+#### add 和 commit 的作用
 
 + add：在做功能的过程中存档，方便回退
 + commit：功能做完了，提交修改
@@ -209,6 +240,7 @@ $ git checkout .
 ```
 撤回指定文件的修改到工作区
 $ git reset [filename]
+
 撤回当前目录下的修改到工作区
 $ git reset .
 ```
@@ -240,13 +272,13 @@ $ git push origin [branchname] --force
 
 ### 分支操作
 
-#### 创建、查看、删除
+#### 创建、查看、删除、切换
 
 ```
 查看
 $ git branch --list
 
-创建
+创建分支，内容和当前分支相同
 $ git checkout -b [branchname]
 
 删除
@@ -255,18 +287,12 @@ $ git branch -d [branchname]
 强制删除（有未合并到远程的提交时使用）
 $ git branch -D [branchname]
 $ git branch -d --force [branchname]
-```
 
-### 切换分支
-
-```
 切换前要保证工作区是干净的
 $ git checkout [branchname]
 ```
 
-#### 合并分支
-
-##### 发一个PR
+#### 发一个 PR 的步骤
 
 1. 把目标分支`pull`到当前分支
 2. 处理冲突
