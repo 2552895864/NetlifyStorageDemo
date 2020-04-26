@@ -1,11 +1,9 @@
 ---
 path: /gitusage
-date: 2020-04-25T10:16:20.693Z
+date: 2020-04-26T10:16:20.693Z
 title: Git使用教程
 description: 结合实际工作的需求，介绍 Git 的基本使用
 ---
-# Git简单使用
-
 - [Git简单使用](#git%e7%ae%80%e5%8d%95%e4%bd%bf%e7%94%a8)
   - [背景](#%e8%83%8c%e6%99%af)
   - [初次使用](#%e5%88%9d%e6%ac%a1%e4%bd%bf%e7%94%a8)
@@ -231,8 +229,13 @@ $ git push origin [curent-branchname]
 #### 撤回工作区的修改
 
 ```
-将工作区的内容回退到上一次 add 后的状态
+将工作区的 文件修改 回退到上一次 add 后的状态
 $ git checkout .
+如果进行过文件新增 删除工作区新增的文件和文件夹
+$ git clean -df
+如果进行过文件删除
+$ git status
+$ git checkout -- [filename or directoryname]
 ```
 
 #### 撤回暂存区的修改
